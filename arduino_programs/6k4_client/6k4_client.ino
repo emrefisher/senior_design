@@ -22,13 +22,11 @@
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
-byte mac[] = {
-  0x90, 0xA2, 0xDA, 0x10, 0x18, 0x36
-};
-IPAddress ip(192, 168, 10, 177);
+byte mac[] = { 0x90, 0xA2, 0xDA, 0x10, 0x18, 0x36 };
+IPAddress ip( 192, 168, 10, 177 );
 
 // Enter the IP address of the server you're connecting to:
-IPAddress server(192,168,10,30);   // IP address of Parker Motor Compumotor 6K4
+IPAddress server( 192,168,10,30 );   // IP address of Parker Motor Compumotor 6K4
 
 // Initialize the Ethernet client library
 // with the IP address and port of the server
