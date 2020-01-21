@@ -1,70 +1,89 @@
 
  ___________   ___________   ________   ___________    ___________
-|			| |			  | |		 | |		   |  |			  |
+|           | |           | |        | |           |  |           |
 | <-- NEGATIVE DIRECTION  | |  STOP  | |  POSITIVE DIRECTION -->  |
 |___________| |___________| |________| |___________|  |___________|
-	FAST          SLOW 					   SLOW 		  FAST
-  RUN NEG_F	    RUN NEG_S    RUN STOP    RUN POS_S      RUN POS_F
+    FAST          SLOW                      SLOW          FAST
+  RUN NEGF 	    RUN NEGS        !K       RUN POSS       RUN POSF
 
 
+;On startup, run the following command(s):
+	SETUP
+	DRIVE1
+
+;To jog axis 1 in the negative direction, fast:
+	NEGF
+
+;To jog axis 1 in the negative direction, slow:
+	NEGS
+
+;o jog axis 1 in the positive direction, fast:
+	POSF
+
+;To jog axis 1 in the positive direction, slow:
+	POSS
 
 
+================================ AUTOMATION SCRIPTS ================================
+; these scripts are pre-loaded onto the 6K4 device (saved in battery backed up RAM)
+
+DEL SETUP
 DEF SETUP
+	; sets up jog AVD parameters
+	; enables jog mode on axes
+	; sets up input functions for jogging
+
+	LH0			; disable hardware EOT limit (until installed)
+
 	JOGA 10,10	; jog acceleration on axis 1 & 2
 	JOGAD 10,10	; jog deceleration on axis 1 & 2
 	JOGVH 10,10	; jog velocity when jog velocity select input is high
 	JOGVL 5,5	; jog velocity when jog velocity select input is low
 
-	JOG1100		; enable job mode on axes 1 & 2
+	JOG1000		; enable job mode on axis 1
 
 	; set up inputs
 	INFNC1-1L	; JOG VELOCITY SELECT-AXIS 1
 	INFNC2-1J	; JOG POS INPUT-AXIS 1
 	INFNC3-1K	; JOG NEG INPUT-AXIS 1
 
-	INFNC1-2L	; JOG VELOCITY SELECT-AXIS 2
-	INFNC2-2J	; JOG POS INPUT-AXIS 2
-	INFNC3-2K	; JOG NEG INPUT-AXIS 2
+	;INFNC1-2L	; JOG VELOCITY SELECT-AXIS 2
+	;INFNC2-2J	; JOG POS INPUT-AXIS 2
+	;INFNC3-2K	; JOG NEG INPUT-AXIS 2
 END
 
 
-DEF STOP
-	; stop all axis moves
-	!K
-END
-
-
-DEF POS_S
+DEL POSS
+DEF POSS
 	; axis 1, positive direction, slow
+	INLVL 0000
+	T0.05
 	INLVL 0100
-	GO 1000
 END
 
 
-DEF POS_F
+DEL POSF
+DEF POSF
 	; axis 1, positive direction, fast
+	INLVL 0000
+	T0.05
 	INLVL 1100
-	GO 1000
 END
 
 
-DEF NEG_S
+DEL NEGS
+DEF NEGS
 	; axis 1, negative direction, slow
+	INLVL 0000
+	T0.05
 	INLVL 0010
-	GO 1000
 END
 
 
-DEF NEG_F
+DEL NEGF
+DEF NEGF
 	; axis 1, negative direction, fast
+	INLVL 0000
+	T0.05
 	INLVL 1010
-	GO 1000
 END
-
-
-RUN SETUP
-
-
-
-
-
