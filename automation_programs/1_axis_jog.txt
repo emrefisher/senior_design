@@ -31,7 +31,9 @@ DEL SETUP
 DEF SETUP
 	; sets up jog AVD parameters
 	; enables jog mode on axes
-	; sets up input functions for jogging
+
+	; scaling
+	SCLD 1,70	; scale axis 1 by 1, axis 2 by 70 counts (90 = 90 degrees)
 
 	LH0			; disable hardware EOT limit (until installed)
 
@@ -42,7 +44,7 @@ DEF SETUP
 
 	JOG1000		; enable job mode on axis 1
 
-	; set up inputs
+	; set up inputs for jogging
 	INFNC1-1L	; JOG VELOCITY SELECT-AXIS 1
 	INFNC2-1J	; JOG POS INPUT-AXIS 1
 	INFNC3-1K	; JOG NEG INPUT-AXIS 1
