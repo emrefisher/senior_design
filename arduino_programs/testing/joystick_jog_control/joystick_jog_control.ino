@@ -1,17 +1,23 @@
+/*
+Ethernet Shield Reserved Pins: 10, 11, 12, 13 (Uno)
+                               50, 51, 52 (Mega)
 
-LED_BUILTIN
-
-
+ */
 
 
 #include <SPI.h>
 #include <Ethernet.h>
 
 int joystick_pin = A0;		// select the input pin for the potentiometer
-int joystick_value = 0;	// variable to store the value coming from the sensor
-bool pos_flag = false;
-bool stop_flag = false;
-bool neg_flag = false;
+int joystick_value = 0;	     // variable to store the value coming from the sensor
+int joystick_button = 2;      // joystick pushbutton (digital in 8)
+
+// flags
+bool drive_active = 0;
+bool pos_f_flag = 0;     // positive, fast
+bool pos_s_flag = 0;     // positive, slow
+bool neg_s_flag = 0;     // negative, slow
+bool neg_f_flag = 0;     // negative, fast
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network
@@ -28,8 +34,8 @@ EthernetClient client;
 
 void setup() {
 
-	pinMode(LED_BUILTIN, OUTPUT);		// initialize built-in LED, status LED for connectivity
-	digitalWrite(LED_BUILTIN, LOW);
+     pinMode(joystick_button, INPUT);
+     digitalWrite(joystick_button, HIGH);
 
 	// start the Ethernet connection
 	Ethernet.begin(mac, ip);
@@ -59,18 +65,10 @@ void setup() {
 	// if you get a connection, report back via serial
 	if (client.connect(server, 5002)) {
 		Serial.println("connected");
-		digitalWrite(LED_BUILTIN, HIGH);
 	} else {
 		// if you didn't get a connection to the server
 		Serial.println("connection failed");
 	}
-
-
-
-
-
-
-
 
 
 }
@@ -80,18 +78,85 @@ void loop() {
 	// read the value from the sensor:
 	joystick_value = analogRead(joystick_pin);    
 	//Serial.println(joystick_value);
-	if (joystick_value > 600) {
-		 //Serial.println("POSF");
-		 pos_flag = true;
+
+     int joystick_button_val = digitalRead(joystick_button);
+
+     if (drive_active == 0 && joystick_button_val == 0) {
+          client.println("DRIVE1");
+          drive_active = 1;
+          delay(250);
+     }
+     else if (drive_active == 1 && joystick_button_val == 0) {
+          client.println("DRIVE0");
+          drive_active = 0;
+          delay(250);
+     }
+
+
+	if (joystick_value >= 969 && joystick_value <= 1023) {
+          if (pos_s_flag == 1 && pos_f_flag == 1) {
+               client.println("!K");
+               delay(1);
+               client.println("POSF");
+               delay(100);
+//               client.println("!JOG1");
+//               delay(100);
+               pos_s_flag = 0;
+          }
+          pos_f_flag = 1;
+          client.println("POSF");
+          delay(100);
 	}
-	if (joystick_value > 500 && joystick_value < 515) {
-		 //Serial.println("!K");
-		 stop_flag = true;
-	}
-	if (joystick_value < 400) {
-		 //Serial.println("NEGF");
-		 neg_flag = true;
-	}
+
+     if (joystick_value >= 514 && joystick_value <= 968) {
+          pos_s_flag = 1;
+          client.println("POSS");
+          delay(100);
+     }
+
+     if (pos_f_flag == 1 || pos_s_flag == 1 || neg_s_flag == 1 || neg_f_flag == 1) {
+          if (joystick_value >= 503 && joystick_value <= 513) {
+//          if (digitalRead(joystick_button) == 0) {
+               client.println("!K");
+               delay(1);
+               pos_f_flag = 0;
+               pos_s_flag = 0;
+               neg_s_flag = 0;
+               neg_f_flag = 0;
+          }
+     }
+
+     if (joystick_value >= 52 && joystick_value <= 502) {
+          neg_s_flag = 1;
+          client.println("NEGS");
+          delay(100);
+     }
+
+
+     if (joystick_value >= 0 && joystick_value <= 51) {
+          if (neg_s_flag == 1 && neg_f_flag == 1) {
+               client.println("!K");
+               delay(1);
+               client.println("NEGF");
+               delay(100);
+//               client.println("!JOG1");
+//               delay(100);
+               neg_s_flag = 0;
+          }
+          neg_f_flag = 1;
+          client.println("NEGF");
+          delay(100);
+     }
+
+//Serial.print(joystick_value);
+//Serial.print("  ");
+//Serial.print(pos_f_flag);
+//Serial.print(pos_s_flag);
+//Serial.print(neg_s_flag);
+//Serial.print(neg_f_flag);
+//Serial.println();
+
+
 
 		 
 	// if there are incoming bytes available
@@ -104,27 +169,8 @@ void loop() {
 	// as long as there are bytes in the serial queue,
 	// read them and send them out the socket if it's open:
 	while (Serial.available() > 0) {
+     
 		char inChar = Serial.read();
-		if (pos_flag == true) {
-		 char posf[5] = "POSF\r\n";
-		 client.print(posf);
-//     client.print("\r");
-		 pos_flag = false;
-		}
-
-//    if (stop_flag == true) {
-//     char kill[3] = "!K";
-//     client.print(kill);
-//     client.print("\r\n");
-//     stop_flag = false;
-//    }
-
-		if (neg_flag == true) {
-		 char negf[5] = "NEGF";
-		 client.print(negf);
-		 client.print("\r\n");
-		 neg_flag = false;
-		}
 		
 		if (client.connected()) {
 			client.print(inChar);

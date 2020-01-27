@@ -6,6 +6,18 @@
     FAST          SLOW                      SLOW          FAST
   RUN NEGF 	    RUN NEGS        !K       RUN POSS       RUN POSF
 
+================================================================================
+
+ANALOG JOYSTICK WINDOWS
+ ___NEGF___  ___NEGS___  ____!K____  ___POSS___  ___POSF___
+|          ||          ||          ||          ||          |
+|    0     ||          ||    508   ||          ||   1023   |
+|__________||__________||__________||__________||__________|
+|          ||          ||          ||          ||          |
+|   0-251  || 252-502  ||  503-513 || 514-768  || 769-1023 |
+|__________||__________||__________||__________||__________|
+
+================================================================================
 
 ;On startup, run the following command(s):
 	SETUP
@@ -24,11 +36,15 @@
 	POSS
 
 
-================================ AUTOMATION SCRIPTS ================================
+============================== AUTOMATION SCRIPTS ==============================
 ; these scripts are pre-loaded onto the 6K4 device (saved in battery backed up RAM)
 
 DEL SETUP
 DEF SETUP
+	
+	ECHO3
+
+
 	; sets up jog AVD parameters
 	; enables jog mode on axes
 
