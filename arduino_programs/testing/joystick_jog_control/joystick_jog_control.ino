@@ -10,7 +10,7 @@ Ethernet Shield Reserved Pins: 10, 11, 12, 13 (Uno)
 
 int joystick_pin = A0;		// select the input pin for the potentiometer
 int joystick_value = 0;	     // variable to store the value coming from the sensor
-int joystick_button = 2;      // joystick pushbutton (digital in 8)
+int joystick_button = 2;      // joystick pushbutton (digital in 2)
 
 // flags
 bool drive_active = 0;
@@ -147,6 +147,8 @@ void loop() {
           client.println("NEGF");
           delay(100);
      }
+
+//     Serial.println(joystick_value);
 
 //Serial.print(joystick_value);
 //Serial.print("  ");
