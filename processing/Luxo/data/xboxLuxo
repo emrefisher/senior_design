@@ -1,0 +1,7 @@
+Luxo Controller
+Yaw	Main Rotate	3	SLIDER	X Axis	0	1.0	0.0
+Pitch	Arm Rotate	3	SLIDER	Y Rotation	0	1.0	0.0
+A	A	1	BUTTON	Button 0	0	0.0	0.0
+B	B	1	BUTTON	Button 1	0	0.0	0.0
+X	X	1	BUTTON	Button 2	0	0.0	0.0
+Y	Y	1	BUTTON	Button 3	0	0.0	0.0
