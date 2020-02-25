@@ -49,59 +49,109 @@ DEF SETUP
 	; enables jog mode on axes
 
 	; scaling
-	SCLD 1,70	; scale axis 1 by 1, axis 2 by 70 counts (90 = 90 degrees)
+	;;;;;SCLD 1,70	; scale axis 1 by 1, axis 2 by 70 counts (90 = 90 degrees)
 
-	LH0			; disable hardware EOT limit (until installed)
+	LH0,0			; disable hardware EOT limit (until installed)
 
 	JOGA 10,10	; jog acceleration on axis 1 & 2
 	JOGAD 10,10	; jog deceleration on axis 1 & 2
 	JOGVH 10,10	; jog velocity when jog velocity select input is high
 	JOGVL 5,5	; jog velocity when jog velocity select input is low
 
-	JOG1000		; enable job mode on axis 1
+	JOG1100		; enable job mode on axis 1
 
 	; set up inputs for jogging
 	INFNC1-1L	; JOG VELOCITY SELECT-AXIS 1
 	INFNC2-1J	; JOG POS INPUT-AXIS 1
 	INFNC3-1K	; JOG NEG INPUT-AXIS 1
 
-	;INFNC1-2L	; JOG VELOCITY SELECT-AXIS 2
-	;INFNC2-2J	; JOG POS INPUT-AXIS 2
-	;INFNC3-2K	; JOG NEG INPUT-AXIS 2
+	INFNC4-2L	; JOG VELOCITY SELECT-AXIS 2
+	INFNC5-2J	; JOG POS INPUT-AXIS 2
+	INFNC6-2K	; JOG NEG INPUT-AXIS 2
 END
 
 
 DEL POSS
 DEF POSS
 	; axis 1, positive direction, slow
-	INLVL 0000
+	INLVL 000
 	T0.05
-	INLVL 0100
+	INLVL 010
 END
 
 
 DEL POSF
 DEF POSF
 	; axis 1, positive direction, fast
-	INLVL 0000
+	INLVL 000
 	T0.05
-	INLVL 1100
+	INLVL 110
 END
 
 
 DEL NEGS
 DEF NEGS
 	; axis 1, negative direction, slow
-	INLVL 0000
+	INLVL 000
 	T0.05
-	INLVL 0010
+	INLVL 001
 END
 
 
 DEL NEGF
 DEF NEGF
 	; axis 1, negative direction, fast
-	INLVL 0000
+	INLVL 000
 	T0.05
-	INLVL 1010
+	INLVL 101
 END
+
+
+DEL POSS2
+DEF POSS2
+	; axis 2, positive direction, slow
+	INLVL XXX000
+	T0.05
+	INLVL XXX010
+END
+
+
+DEL POSF2
+DEF POSF2
+	; axis 2, positive direction, fast
+	INLVL XXX000
+	T0.05
+	INLVL XXX110
+END
+
+
+DEL NEGS2
+DEF NEGS2
+	; axis 2, negative direction, slow
+	INLVL XXX000
+	T0.05
+	INLVL XXX001
+END
+
+
+DEL NEGF2
+DEF NEGF2
+	; axis 2, negative direction, fast
+	INLVL XXX000
+	T0.05
+	INLVL XXX101
+END
+
+
+
+INLVL000XXX		MUST SET BITS TO 0 BEFORE SETTING THEM TO 1
+	INLVL010XXX 	AXIS 1 POSITIVE SLOW
+	INLVL110XXX		AXIS 1 POSITIVE FAST
+	INLVL001XXX 	AXIS 1 NEGATIVE SLOW
+	INLVL101XXX 	AXIS 1 NEGATIVE FAST
+
+INLVLXXX000		MUST SET BITS TO 0 BEFORE SETTING THEM TO 1
+	INLVLXXX010		AXIS 2 POSITIVE SLOW
+	INLVLXXX110		AXIS 2 POSITIVE FAST
+	INLVLXXX001 	AXIS 2 NEGATIVE SLOW
+	INLVLXXX101 	AXIS 2 NEGATIVE FAST
