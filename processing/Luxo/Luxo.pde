@@ -13,13 +13,16 @@ float yaw;
 float yawOld;
 int posX=0;
 int posY=0;
+int driveFlag = 0;
+int driveState = 1;
+float kill = 0;
 
 void setup() {
-  print(Serial.list());
+  //print(Serial.list());
   mySerial = new Serial(this, Serial.list()[0], 9600);
-  size(1040,820, P3D);
+  size(1920,1080, P3D);
   control = ControlIO.getInstance(this);
-  cont = control.getMatchedDevice("xboxLuxo");
+  cont = control.getMatchedDevice("xboxLuxoDemo");
   
   if (cont == null) {
     println("can't connect to controller!");
@@ -36,6 +39,37 @@ void draw() {
   
   
   getUserInput();
+  
+  if (kill < -0.1 || kill > 0.1) {
+    driveFlag = 1;
+  }
+  
+  if(driveFlag == 1 && driveState == 1) {
+    mySerial.write("DRIVE0000\n");
+    driveState =0;
+    driveFlag = 0;
+  }
+  else if(driveFlag ==1 && driveState == 0) {
+    mySerial.write("DRIVE1100\n");
+    driveState = 1;
+    driveFlag = 0;
+  }
+  
+  //spotLight(0, 0, 0, 1000, -600, -100, -1, -1, 0, 5*PI/4, 2);
+  //if (driveFlag == 1 && driveFlagC == 1) {
+  //   mySerial.write("DRIVE1100\n");
+  //}
+  //else if(driveFlag == 0 && driveFlagC == 0) {
+  //   mySerial.write("DRIVE0000\n");
+  //}
+  
+  //if (kill > -0.1 && kill < 0.1) {
+  //  driveFlag = 0;
+   
+  //}
+  //else {
+  //  driveFlag = 1;
+  //}
   
   //
   //
@@ -79,12 +113,6 @@ void draw() {
   
 
   
-
-  String inBuffer = mySerial.readString();   
-  if (inBuffer != null) {
-    println(inBuffer);
-  }
-
   
   //
   //
@@ -163,7 +191,7 @@ void draw() {
 
 
   background(0);
-  camera(posX+470, posY-200, (height/2) / tan(PI/6), posX+470, posY-200, 0, 0, 1, 0);
+  camera(posX+800, posY+350, (height/2) / tan(PI/6), posX+800, posY+350, 0, 0, 1, 0);
   
   // neon green box 
   translate(2.5*width/8, 2.5*height/8, 0);
@@ -228,10 +256,11 @@ void draw() {
   box(100);
   line(0,0,0,0,0,-1000000000);
   strokeWeight(2);
-  println("PITCH: ",pitch);
-  println("YAW: ",yaw);
+  //println("PITCH: ",pitch);
+  //println("YAW: ",yaw);
 }
 public void getUserInput() {
-  pitch = map(cont.getSlider("Pitch").getValue(), -1.0, 1.0, 0.0, 180.0);
-  yaw = map(cont.getSlider("Yaw").getValue(), -1.0, 1.0, 0.0, 180.0);
+  pitch = map(cont.getSlider("Horizontal").getValue(), -1.0, 1.0, 0.0, 180.0);
+  yaw = map(cont.getSlider("Vertical").getValue(), 1.0, -1.0, 0.0, 180.0);
+  kill = cont.getButton("Kill").getValue();
 }

@@ -1,0 +1,4 @@
+Xbox Luxo Controller
+Vertical	up and down	3	SLIDER	Y Axis	0	1.0	0.0
+Horizontal	left and right	3	SLIDER	X Rotation	0	1.0	0.0
+Kill	toggle drives	1	BUTTON	Button 1	0	0.0	0.0
